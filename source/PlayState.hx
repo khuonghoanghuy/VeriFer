@@ -1,31 +1,52 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
+import flixel.graphics.FlxGraphic;
 import flixel.math.FlxMath;
 import flixel.system.FlxAssets;
 import flixel.text.FlxText;
+import flixel.tile.FlxTilemap;
 import flixel.util.FlxColor;
 
-class PlayState extends FlxState
+class PlayState extends GameState
 {
 	var player:FlxSprite;
+	var levelMap:FlxTilemap;
+
 	// pretty hud
 	var infoTxt:FlxText;
 	var score:Int = 0;
 
+	// camera thing
+	var camFollow:FlxObject;
+
 	override public function create()
 	{
 		super.create();
-		player = new FlxSprite(0, 0);
-		player.makeGraphic(16, 16, 0xffff0000);
+		camFollow = new FlxObject(0, 0, 1, 1);
+		camFollow.screenCenter();
+		add(camFollow);
+
+		levelMap = new FlxTilemap();
+		levelMap.loadMapFromCSV("assets/maps/level1/level1.csv", FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
+		trace(levelMap.width + " and " + levelMap.height);
+		add(levelMap);
+
+		player = new FlxSprite(FlxG.width / 2 - 5);
+		player.makeGraphic(8, 8, 0xffff0000);
 		player.active = true;
+		player.maxVelocity.set(80, 200);
+		player.acceleration.y = 200;
+		player.drag.x = player.maxVelocity.x * 4;
 		add(player);
+
 		infoTxt = new FlxText(10, 10, 0, "Score: " + score, 16);
 		infoTxt.active = true;
 		infoTxt.setFormat(FlxAssets.FONT_DEFAULT, 16, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.BLACK);
 		add(infoTxt);
+		FlxG.camera.follow(player, TOPDOWN, 0.15);
 	}
 
 	function updateInfoTxt()
@@ -35,36 +56,38 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
-		super.update(elapsed);
-		if (FlxG.keys.justPressed.SPACE)
-		{
-			score += 100;
-			updateInfoTxt();
-		}
+		player.acceleration.x = 0;
 
 		if (FlxG.keys.anyPressed([LEFT, A]))
 		{
-			player.velocity.x = -50;
+			player.acceleration.x = -player.maxVelocity.x * 4;
 		}
-		else if (FlxG.keys.anyPressed([RIGHT, D]))
+		if (FlxG.keys.anyPressed([RIGHT, D]))
 		{
-			player.velocity.x = 50;
+			player.acceleration.x = player.maxVelocity.x * 4;
 		}
-		else
+		if (FlxG.keys.anyJustPressed([SPACE, UP, W]) && player.isTouching(FLOOR))
 		{
-			player.velocity.x = 0;
+			player.velocity.y = -player.maxVelocity.y / 2;
 		}
 
-		if (FlxG.keys.anyJustPressed([UP, W]))
+		if (FlxG.keys.justPressed.F12)
 		{
-			player.velocity.y = -50;
-			player.acceleration.y = -200;
-		}
-		else
-		{
-			player.acceleration.y = 0;
+			FlxG.switchState(new EditorState());
 		}
 
-		player.acceleration.y += 400;
+		super.update(elapsed);
+		if (FlxG.keys.justPressed.SPACE)
+		{
+			score += 11;
+		}
+		updateInfoTxt();
+
+		FlxG.collide(levelMap, player);
+
+		if (player.y > FlxG.height)
+		{
+			FlxG.resetState();
+		}
 	}
 }

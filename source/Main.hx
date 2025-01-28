@@ -8,7 +8,7 @@ import openfl.filters.ShaderFilter;
 
 class Main extends Sprite
 {
-	var vhsShader:String = '
+	public static var vhsShader:String = '
 		#pragma header
 
 		#pragma format R8G8B8A8_SRGB
@@ -207,7 +207,8 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-		addChild(new FlxGame(0, 0, PlayState));
+		addChild(new FlxGame(320, 240, PlayState));
 		FlxG.camera.filters = [new ShaderFilter(new FlxRuntimeShader(vhsShader))];
+		FlxG.mouse.useSystemCursor = true;
 	}
 }
