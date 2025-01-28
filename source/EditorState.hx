@@ -3,17 +3,25 @@ package;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.addons.display.FlxRuntimeShader;
+import flixel.addons.ui.FlxInputText;
 import flixel.graphics.FlxGraphic;
 import flixel.system.FlxAssets;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxColor;
 import openfl.Assets;
+import openfl.filters.ShaderFilter;
+import sys.FileSystem;
+import sys.io.File;
 
 class EditorState extends GameState
 {
 	var previewMap:FlxTilemap;
 	var loadMapPath:String = "assets/maps/level1/level1.csv";
+	var placeToSave:String = "assets/maps/level1/level1.csv";
+	var inputTextToType:FlxInputText;
+	var mapCSVString = "";
 	var boxSelected:FlxSprite;
 	var fullyInfoTxt:FlxText;
 	var displayFullyInfo:Bool = false;
@@ -23,8 +31,10 @@ class EditorState extends GameState
 	{
 		super.create();
 
+		mapCSVString = File.getContent(Std.string(loadMapPath));
+
 		previewMap = new FlxTilemap();
-		previewMap.loadMapFromCSV(Assets.getText(loadMapPath), FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
+		previewMap.loadMapFromCSV(mapCSVString, FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
 		add(previewMap);
 
 		boxSelected = new FlxSprite(0, 0);
@@ -34,6 +44,7 @@ class EditorState extends GameState
 
 		camHUD = new FlxCamera();
 		camHUD.bgColor = FlxColor.TRANSPARENT;
+		camHUD.filters = [new ShaderFilter(new FlxRuntimeShader(Main.vhsShader))];
 		FlxG.cameras.add(camHUD, false);
 
 		fullyInfoTxt = new FlxText(2, 2, 0, "", 12);
@@ -42,6 +53,13 @@ class EditorState extends GameState
 		fullyInfoTxt.visible = false;
 		fullyInfoTxt.cameras = [camHUD];
 		add(fullyInfoTxt);
+
+		inputTextToType = new FlxInputText(2, FlxG.height - 20, 120, placeToSave, 11);
+		inputTextToType.setFormat(FlxAssets.FONT_DEBUGGER, 11, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.BLACK);
+		inputTextToType.active = true;
+		inputTextToType.visible = false;
+		inputTextToType.cameras = [camHUD];
+		add(inputTextToType);
 
 		updateInfo();
 	}
@@ -54,6 +72,7 @@ class EditorState extends GameState
 		if (FlxG.keys.justPressed.TAB)
 			displayFullyInfo = !displayFullyInfo;
 		fullyInfoTxt.visible = displayFullyInfo;
+		inputTextToType.visible = displayFullyInfo;
 
 		boxSelected.x = FlxG.mouse.x - FlxG.mouse.x % 8;
 		boxSelected.y = FlxG.mouse.y - FlxG.mouse.y % 8;
@@ -76,6 +95,15 @@ class EditorState extends GameState
 			FlxG.camera.scroll.y += 5;
 		}
 
+		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.S)
+		{
+			saveMap();
+		}
+		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.L)
+		{
+			// Add functionality for loading map here
+		}
+
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			FlxG.switchState(new PlayState());
@@ -84,6 +112,31 @@ class EditorState extends GameState
 
 	function updateInfo()
 	{
-		return fullyInfoTxt.text = 'Cam Scroll: ${FlxG.camera.scroll.x}|${FlxG.camera.scroll.y}';
+		return fullyInfoTxt.text = 'Cam Scroll: ${FlxG.camera.scroll.x}|${FlxG.camera.scroll.y}'
+			+ '\nBox: ${boxSelected.x}|${boxSelected.y}'
+			+ '\nMap: ${previewMap.width}|${previewMap.height}';
+	}
+
+	function saveMap()
+	{
+		var csvData = mapCSVString;
+		var filePath = inputTextToType.text;
+		try
+		{
+			if (FileSystem.exists(filePath))
+				File.saveContent(filePath, csvData);
+			else
+			{
+				var dirPath = filePath.substring(0, filePath.lastIndexOf('/'));
+				if (!FileSystem.exists(dirPath))
+					FileSystem.createDirectory(dirPath);
+				File.saveContent(filePath, csvData);
+			}
+			trace('save to ${inputTextToType.text}');
+		}
+		catch (e)
+		{
+			trace("Couldn't save file for this path: " + filePath + "\nError Code:" + e.message);
+		}
 	}
 }
