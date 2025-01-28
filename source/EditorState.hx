@@ -15,6 +15,8 @@ import openfl.filters.ShaderFilter;
 import sys.FileSystem;
 import sys.io.File;
 
+using StringTools;
+
 class EditorState extends GameState
 {
 	var previewMap:FlxTilemap;
