@@ -66,6 +66,8 @@ class EditorState extends GameState
 		updateInfo();
 	}
 
+	var tryToConfig:Array<Int> = [8, 8];
+
 	override function update(elapsed:Float)
 	{
 		updateInfo();
@@ -97,6 +99,13 @@ class EditorState extends GameState
 			FlxG.camera.scroll.y += 5;
 		}
 
+		if (FlxG.mouse.pressed)
+		{
+			// previewMap.setTileByIndex(FlxG.keys.pressed.SHIFT ? 0 : 1, FlxG.keys.pressed.SHIFT ? 0 : 1);
+			var tileIndex = previewMap.getTileIndexByCoords(boxSelected.getPosition());
+			previewMap.setTileByIndex(tileIndex, FlxG.keys.pressed.SHIFT ? 0 : 1);
+		}
+
 		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.S)
 		{
 			saveMap();
@@ -116,7 +125,8 @@ class EditorState extends GameState
 	{
 		return fullyInfoTxt.text = 'Cam Scroll: ${FlxG.camera.scroll.x}|${FlxG.camera.scroll.y}'
 			+ '\nBox: ${boxSelected.x}|${boxSelected.y}'
-			+ '\nMap: ${previewMap.width}|${previewMap.height}';
+			+ '\nMap: ${previewMap.width}|${previewMap.height}'
+			+ '\nWhere Place: ${tryToConfig[0]}|${tryToConfig[1]}';
 	}
 
 	function saveMap()
