@@ -66,8 +66,6 @@ class EditorState extends GameState
 		updateInfo();
 	}
 
-	var tryToConfig:Array<Int> = [8, 8];
-
 	override function update(elapsed:Float)
 	{
 		updateInfo();
@@ -110,9 +108,9 @@ class EditorState extends GameState
 		{
 			saveMap();
 		}
-		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.L)
+		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.X)
 		{
-			// Add functionality for loading map here
+			loadMap();
 		}
 
 		if (FlxG.keys.justPressed.ESCAPE)
@@ -125,8 +123,7 @@ class EditorState extends GameState
 	{
 		return fullyInfoTxt.text = 'Cam Scroll: ${FlxG.camera.scroll.x}|${FlxG.camera.scroll.y}'
 			+ '\nBox: ${boxSelected.x}|${boxSelected.y}'
-			+ '\nMap: ${previewMap.width}|${previewMap.height}'
-			+ '\nWhere Place: ${tryToConfig[0]}|${tryToConfig[1]}';
+			+ '\nMap: ${previewMap.width}|${previewMap.height}';
 	}
 
 	function saveMap()
@@ -149,6 +146,26 @@ class EditorState extends GameState
 		catch (e)
 		{
 			trace("Couldn't save file for this path: " + filePath + "\nError Code:" + e.message);
+		}
+	}
+	function loadMap()
+	{
+		var filePath = inputTextToType.text;
+		try
+		{
+			if (FileSystem.exists(filePath))
+			{
+				mapCSVString = File.getContent(filePath);
+				previewMap.loadMapFromCSV(Std.string(filePath), FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
+			}
+			else
+			{
+				trace("Couldn't load file: " + filePath);
+			}
+		}
+		catch (e:Dynamic)
+		{
+			trace("Error loading file: " + filePath + "\nError Code: " + e);
 		}
 	}
 }
