@@ -9,6 +9,7 @@ import flixel.graphics.FlxGraphic;
 import flixel.system.FlxAssets;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
+import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import openfl.Assets;
 import openfl.filters.ShaderFilter;
@@ -28,6 +29,8 @@ class EditorState extends GameState
 	var fullyInfoTxt:FlxText;
 	var displayFullyInfo:Bool = false;
 	var camHUD:FlxCamera;
+	var saveButton:FlxButton;
+	var loadButton:FlxButton;
 
 	override function create()
 	{
@@ -63,6 +66,16 @@ class EditorState extends GameState
 		inputTextToType.cameras = [camHUD];
 		add(inputTextToType);
 
+		saveButton = new FlxButton(2, inputTextToType.y - 20, "Save Map", saveMap);
+		saveButton.cameras = [camHUD];
+		saveButton.updateHitbox();
+		add(saveButton);
+
+		loadButton = new FlxButton(2, saveButton.y - 20, "Load Map", loadMap);
+		loadButton.cameras = [camHUD];
+		loadButton.updateHitbox();
+		add(loadButton);
+
 		updateInfo();
 	}
 
@@ -72,51 +85,32 @@ class EditorState extends GameState
 		super.update(elapsed);
 
 		if (FlxG.keys.justPressed.TAB)
-			displayFullyInfo = !displayFullyInfo;
-		fullyInfoTxt.visible = displayFullyInfo;
-		inputTextToType.visible = displayFullyInfo;
+			displayFullyInfo = !displayFullyInfo; // just bcuz camHUD is suck
+		fullyInfoTxt.visible = inputTextToType.visible = saveButton.visible = loadButton.visible = displayFullyInfo;
 
 		boxSelected.x = FlxG.mouse.x - FlxG.mouse.x % 8;
 		boxSelected.y = FlxG.mouse.y - FlxG.mouse.y % 8;
 
 		// camera movement
 		if (FlxG.keys.pressed.LEFT)
-		{
 			FlxG.camera.scroll.x -= 5;
-		}
 		if (FlxG.keys.pressed.RIGHT)
-		{
 			FlxG.camera.scroll.x += 5;
-		}
 		if (FlxG.keys.pressed.UP)
-		{
 			FlxG.camera.scroll.y -= 5;
-		}
 		if (FlxG.keys.pressed.DOWN)
-		{
 			FlxG.camera.scroll.y += 5;
-		}
 
 		if (FlxG.mouse.pressed)
-		{
-			// previewMap.setTileByIndex(FlxG.keys.pressed.SHIFT ? 0 : 1, FlxG.keys.pressed.SHIFT ? 0 : 1);
-			var tileIndex = previewMap.getTileIndexByCoords(boxSelected.getPosition());
-			previewMap.setTileByIndex(tileIndex, FlxG.keys.pressed.SHIFT ? 0 : 1);
-		}
+			previewMap.setTileByIndex(previewMap.getTileIndexByCoords(boxSelected.getPosition()), FlxG.keys.pressed.SHIFT ? 0 : 1);
 
 		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.S)
-		{
 			saveMap();
-		}
 		if (FlxG.keys.pressed.CONTROL && FlxG.keys.justPressed.X)
-		{
 			loadMap();
-		}
 
 		if (FlxG.keys.justPressed.ESCAPE)
-		{
 			FlxG.switchState(new PlayState());
-		}
 	}
 
 	function updateInfo()
@@ -155,8 +149,8 @@ class EditorState extends GameState
 		{
 			if (FileSystem.exists(filePath))
 			{
-				mapCSVString = File.getContent(filePath);
-				previewMap.loadMapFromCSV(Std.string(filePath), FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
+				mapCSVString = Assets.getText(filePath);
+				previewMap.loadMapFromCSV(mapCSVString, FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
 			}
 			else
 			{

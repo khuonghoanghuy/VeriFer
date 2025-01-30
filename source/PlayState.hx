@@ -76,6 +76,9 @@ class PlayState extends GameState
 			FlxG.switchState(new EditorState());
 		}
 
+		if (FlxG.keys.justPressed.ESCAPE)
+			openSubState(new PauseSubState(true));
+
 		super.update(elapsed);
 		if (FlxG.keys.justPressed.SPACE)
 		{
