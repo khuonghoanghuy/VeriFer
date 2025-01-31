@@ -54,6 +54,8 @@ class PauseSubState extends GameSubState
 					close();
 					FlxG.resetState();
 				case "exit":
+					close();
+					FlxG.switchState(new MenuState());
 			}
 		}
 	}
