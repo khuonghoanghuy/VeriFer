@@ -10,6 +10,7 @@ import openfl.filters.ShaderFilter;
 class GameSubState extends FlxSubState
 {
 	var getBlackBG:Bool = false;
+	var bg:FlxSprite;
 
 	public function new(wannaGetBlackBG:Bool = false)
 	{
@@ -27,7 +28,7 @@ class GameSubState extends FlxSubState
 
 		if (getBlackBG)
 		{
-			var bg:FlxSprite = new FlxSprite(0, 0);
+			bg = new FlxSprite(0, 0);
 			bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 			bg.alpha = 0.5;
 			bg.screenCenter();

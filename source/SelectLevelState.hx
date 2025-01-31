@@ -57,6 +57,13 @@ class SelectLevelState extends GameState
 		else if (FlxG.keys.justPressed.DOWN)
 			changeSelection(1);
 
+		if (FlxG.keys.justPressed.ENTER)
+		{
+			PlayState.levelNumber = curSelected + 1;
+			PlayState.levelType = arrayTypeMap[0].toLowerCase();
+			FlxG.switchState(new PlayState());
+		}
+
 		if (FlxG.keys.justPressed.ESCAPE)
 			FlxG.switchState(new MenuState());
 	}

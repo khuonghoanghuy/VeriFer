@@ -14,6 +14,8 @@ class PlayState extends GameState
 {
 	var player:FlxSprite;
 	var levelMap:FlxTilemap;
+	public static var levelNumber:Int = 1;
+	public static var levelType:String = "first place";
 
 	// pretty hud
 	var infoTxt:FlxText;
@@ -30,7 +32,7 @@ class PlayState extends GameState
 		add(camFollow);
 
 		levelMap = new FlxTilemap();
-		levelMap.loadMapFromCSV("assets/maps/level1/level1.csv", FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
+		levelMap.loadMapFromCSV('assets/maps/level$levelNumber/level${levelNumber}_${levelType}.csv', FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
 		// trace(levelMap.width + " and " + levelMap.height);
 		add(levelMap);
 

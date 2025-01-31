@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
@@ -12,19 +13,27 @@ class PauseSubState extends GameSubState
 	var arraySelect:Array<String> = ["Resume", "Restart", "Exit"];
 	var groupText:FlxTypedGroup<FlxText>;
 	var curSelected:Int = 0;
+	var camGame:FlxCamera;
 
 	override function create()
 	{
 		super.create();
 
+		camGame = new FlxCamera();
+		camGame.bgColor = FlxColor.TRANSPARENT;
+		FlxG.cameras.add(camGame, false);
+
+		bg.cameras = [camGame];
+
 		groupText = new FlxTypedGroup<FlxText>();
+		groupText.cameras = [camGame];
 		add(groupText);
 
 		for (i in 0...arraySelect.length)
 		{
 			var text:FlxText = new FlxText(20 + (i * -2), 20 + (i * 20), 0, arraySelect[i], 24);
 			text.setFormat(FlxAssets.FONT_DEBUGGER, 18, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
-			// text.scrollFactor.set();
+			text.cameras = [camGame];
 			text.ID = i;
 			groupText.add(text);
 		}
