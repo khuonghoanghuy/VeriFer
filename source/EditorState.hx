@@ -49,7 +49,8 @@ class EditorState extends GameState
 
 		camHUD = new FlxCamera();
 		camHUD.bgColor = FlxColor.TRANSPARENT;
-		camHUD.filters = [new ShaderFilter(new FlxRuntimeShader(Main.vhsShader))];
+		if (SaveData.settings.shaderMode)
+			camHUD.filters = [new ShaderFilter(new FlxRuntimeShader(Main.vhsShader))];
 		FlxG.cameras.add(camHUD, false);
 
 		fullyInfoTxt = new FlxText(2, 2, 0, "", 12);

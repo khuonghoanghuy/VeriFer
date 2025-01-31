@@ -208,7 +208,9 @@ class Main extends Sprite
 	{
 		super();
 		addChild(new FlxGame(320, 240, PlayState));
-		FlxG.camera.filters = [new ShaderFilter(new FlxRuntimeShader(vhsShader))];
+		if (SaveData.settings.shaderMode)
+			FlxG.camera.filters = [new ShaderFilter(new FlxRuntimeShader(vhsShader))];
 		FlxG.mouse.useSystemCursor = true;
+		SaveData.init();
 	}
 }

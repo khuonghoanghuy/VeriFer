@@ -41,7 +41,11 @@ class MenuState extends GameState
 
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			switch (arrayList[curSelected].toLowerCase()) {}
+			switch (arrayList[curSelected].toLowerCase())
+			{
+				case "options":
+					FlxG.switchState(new options.OptionsState());
+			}
 		}
 	}
 
