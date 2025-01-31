@@ -71,11 +71,6 @@ class PlayState extends GameState
 			player.velocity.y = -player.maxVelocity.y / 2;
 		}
 
-		if (FlxG.keys.justPressed.SEVEN)
-		{
-			FlxG.switchState(new EditorState());
-		}
-
 		if (FlxG.keys.justPressed.ESCAPE)
 			openSubState(new PauseSubState(true));
 

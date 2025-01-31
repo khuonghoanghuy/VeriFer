@@ -24,7 +24,7 @@ class PauseSubState extends GameSubState
 		{
 			var text:FlxText = new FlxText(20 + (i * -2), 20 + (i * 20), 0, arraySelect[i], 24);
 			text.setFormat(FlxAssets.FONT_DEBUGGER, 18, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
-			text.scrollFactor.set();
+			// text.scrollFactor.set();
 			text.ID = i;
 			groupText.add(text);
 		}

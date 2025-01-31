@@ -48,7 +48,7 @@ class OptionsState extends GameState
 		{
 			var text:FlxText = new FlxText(20 + (i * -2), 20 + (i * 20), 0, optionsList[i].toString(), 24);
 			text.ID = i;
-			text.scrollFactor.set();
+			// text.scrollFactor.set();
 			text.setFormat(FlxAssets.FONT_DEBUGGER, 18, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 			groupOptions.add(text);
 		}
@@ -60,7 +60,7 @@ class OptionsState extends GameState
 		add(description);
 
 		changeSelection(0);
-		FlxG.camera.follow(camFollow, null, 0.14);
+		FlxG.camera.follow(camFollow, LOCKON, 0.14);
 	}
 
 	override function update(elapsed:Float)
@@ -84,6 +84,9 @@ class OptionsState extends GameState
 			if (option != null)
 				option.execute();
 		}
+
+		if (FlxG.keys.justPressed.R)
+			SaveData.eraseData();
 
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
