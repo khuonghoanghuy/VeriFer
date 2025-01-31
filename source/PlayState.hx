@@ -31,7 +31,7 @@ class PlayState extends GameState
 
 		levelMap = new FlxTilemap();
 		levelMap.loadMapFromCSV("assets/maps/level1/level1.csv", FlxGraphic.fromClass(GraphicAuto), 0, 0, AUTO);
-		trace(levelMap.width + " and " + levelMap.height);
+		// trace(levelMap.width + " and " + levelMap.height);
 		add(levelMap);
 
 		player = new FlxSprite(FlxG.width / 2 - 5);

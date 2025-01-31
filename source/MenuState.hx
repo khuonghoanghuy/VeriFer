@@ -43,8 +43,13 @@ class MenuState extends GameState
 		{
 			switch (arrayList[curSelected].toLowerCase())
 			{
+				case "play":
+					FlxG.switchState(new PlayState());
 				case "options":
 					FlxG.switchState(new options.OptionsState());
+				case "quit":
+					SaveData.saveSettings();
+					Sys.exit(0);
 			}
 		}
 	}

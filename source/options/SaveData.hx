@@ -16,6 +16,8 @@ class SaveData
 		for (key in Reflect.fields(settings))
 			if (Reflect.field(FlxG.save.data, key) != null)
 				Reflect.setField(settings, key, Reflect.field(FlxG.save.data, key));
+		FlxG.save.bind("veriferData", "Huy1234TH");
+		trace('save init!');
 	}
 
 	public static function saveSettings()
@@ -23,6 +25,7 @@ class SaveData
 		for (key in Reflect.fields(settings))
 			Reflect.setField(FlxG.save.data, key, Reflect.field(settings, key));
 
+		FlxG.save.bind("veriferData", "Huy1234TH");
 		FlxG.save.flush();
 
 		trace('settings saved!');

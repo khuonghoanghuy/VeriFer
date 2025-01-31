@@ -9,7 +9,7 @@ class GameState extends FlxState
 {
 	override function create()
 	{
-		if (SaveData.settings.shaderMode)
+		if (SaveData != null && SaveData.settings != null && SaveData.settings.shaderMode)
 			FlxG.camera.filters = [new ShaderFilter(new FlxRuntimeShader(Main.vhsShader))];
 		super.create();
 	}

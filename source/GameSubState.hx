@@ -22,7 +22,7 @@ class GameSubState extends FlxSubState
 	{
 		super.create();
 
-		if (SaveData.settings.shaderMode)
+		if (SaveData != null && SaveData.settings != null && SaveData.settings.shaderMode)
 			FlxG.camera.filters = [new ShaderFilter(new FlxRuntimeShader(Main.vhsShader))];
 
 		if (getBlackBG)
